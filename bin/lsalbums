@@ -1,0 +1,3 @@
+#!/bin/bash
+
+mpc -f '%date% - %album%' find albumartist "$@" | sort -nu
