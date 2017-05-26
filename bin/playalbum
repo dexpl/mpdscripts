@@ -5,10 +5,11 @@
 # -l list only
 # -r set 'random on'
 # -z search for albumartist instead of album
-while getopts ":aeflrtz" Option
+while getopts ":aAeflrtz" Option
 do
 	case $Option in
 		a) lookFor=artist ;;
+		A) append=yes ;;
 		e) resumeAfter=yes ;;
 		f) find=search ;;
 		l) listOnly=yes ;;
@@ -34,7 +35,9 @@ current="${*:-$(mpc -f %${lookFor}% -q current)}"
 # [ -n "${__DEBUG}" ] && echo ${current} && mpc find ${lookFor} "${current}"	&& exit
 mpc ${find:-find} ${lookFor} "${current}" | {
 	[ -z "${listOnly}" ] && {
-		mpc | grep -qe '^\[playing' && mpc crop || mpc clear
+		[ -n "${append}" ] || {
+			mpc | grep -qe '^\[playing' && mpc crop || mpc clear
+		}
 		mpc consume on
 		mpc random ${random:-off}
 		mpc single off
