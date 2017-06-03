@@ -5,13 +5,14 @@
 # -l list only
 # -r set 'random on'
 # -z search for albumartist instead of album
-while getopts ":aAeflrtz" Option
+while getopts ":aAefglrtz" Option
 do
 	case $Option in
 		a) lookFor=artist ;;
 		A) append=yes ;;
 		e) resumeAfter=yes ;;
 		f) find=search ;;
+		g) lookFor=genre ;;
 		l) listOnly=yes ;;
 		r) random=on ;;
 		t) lookFor=title ;;
