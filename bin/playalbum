@@ -1,15 +1,23 @@
 #!/bin/sh
 
-# -a search for artist instead of album
+# Play the entire album to which the currently playing song belongs.
+
+# -a look for artist, not album
+# -A do not remove currently playing song
+# -C do not clear current playlist (overrides -A)
+# -e resume after new playlist (i. e. call musicresume)
 # -f fuzzy search (i. e. `mpc search`, not `mpc find`)
+# -g look for genre, not album
 # -l list only
 # -r set 'random on'
-# -z search for albumartist instead of album
-while getopts ":aAefglrtz" Option
+# -t look for title, not album
+# -z look for albumartist, not album
+while getopts ":aACefglrtz" Option
 do
 	case $Option in
 		a) lookFor=artist ;;
 		A) append=yes ;;
+		C) noClear=yes ;;
 		e) resumeAfter=yes ;;
 		f) find=search ;;
 		g) lookFor=genre ;;
@@ -36,8 +44,10 @@ current="${*:-$(mpc -f %${lookFor}% -q current)}"
 # [ -n "${__DEBUG}" ] && echo ${current} && mpc find ${lookFor} "${current}"	&& exit
 mpc ${find:-find} ${lookFor} "${current}" | {
 	[ -z "${listOnly}" ] && {
-		[ -n "${append}" ] || {
-			mpc | grep -qe '^\[playing' && mpc crop || mpc clear
+		[ -n "${noClear}" ] || {
+			[ -n "${append}" ] || {
+				mpc | grep -qe '^\[playing' && mpc crop || mpc clear
+			}
 		}
 		mpc consume on
 		mpc random ${random:-off}
