@@ -1,3 +1,4 @@
 #!/bin/bash
 
-mpc -f '%date% - %album%' find albumartist "$*" | sort -nu
+artist=${*:-$(mpc -f %artist% current)}
+mpc -f '%date% - %album%' find albumartist "${artist}" | sort -u
