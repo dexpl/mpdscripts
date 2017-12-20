@@ -8,11 +8,12 @@
 # -e resume after new playlist (i. e. call musicresume)
 # -f fuzzy search (i. e. `mpc search`, not `mpc find`)
 # -g look for genre, not album
+# -i insert after currently playing song (implies -C)
 # -l list only
 # -r set 'random on'
 # -t look for title, not album
 # -z look for albumartist, not album
-while getopts ":aACefglrtz" Option
+while getopts ":aACefgilrtz" Option
 do
 	case $Option in
 		a) lookFor=artist ;;
@@ -21,6 +22,7 @@ do
 		e) resumeAfter=yes ;;
 		f) find=search ;;
 		g) lookFor=genre ;;
+		i) noClear=yes ; addCmd=insert ;;
 		l) listOnly=yes ;;
 		r) random=on ;;
 		t) lookFor=title ;;
@@ -38,8 +40,8 @@ done
 
 shift $(($OPTIND - 1))
 
-lookFor=${lookFor:-album}
 current="${*:-$(mpc -f %${lookFor}% -q current)}"
+lookFor=${lookFor:-album}
 [ -z "${current}" ] && exit
 # [ -n "${__DEBUG}" ] && echo ${current} && mpc find ${lookFor} "${current}"	&& exit
 mpc ${find:-find} ${lookFor} "${current}" | {
@@ -52,7 +54,7 @@ mpc ${find:-find} ${lookFor} "${current}" | {
 		mpc consume on
 		mpc random ${random:-off}
 		mpc single off
-		mpc add
+		mpc ${addCmd:-add}
 		mpc play
 		[ -n "${resumeAfter}" ] && musicresume
 	} || cat
