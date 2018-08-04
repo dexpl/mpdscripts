@@ -40,8 +40,8 @@ done
 
 shift $(($OPTIND - 1))
 
-current="${*:-$(mpc -f %${lookFor}% -q current)}"
 lookFor=${lookFor:-album}
+current="${*:-$(mpc -f %${lookFor}% -q current)}"
 [ -z "${current}" ] && exit
 # [ -n "${__DEBUG}" ] && echo ${current} && mpc find ${lookFor} "${current}"	&& exit
 mpc ${find:-find} ${lookFor} "${current}" | {
